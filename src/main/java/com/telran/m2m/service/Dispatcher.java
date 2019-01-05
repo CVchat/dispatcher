@@ -1,41 +1,54 @@
 package com.telran.m2m.service;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.telran.m2m.dto.SensorData;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.integration.support.MessageBuilder;
+import org.springframework.cloud.stream.annotation.Output;
+import org.springframework.cloud.stream.messaging.Sink;
+import org.springframework.messaging.MessageChannel;
 
+public interface Dispatcher extends Sink {
+    String TEMP_HIGHER_VALUES = "temp_higher_values";
+    String TEMP_LOWER_VALUES = "temp_lower_values";
 
-import java.io.IOException;
+    String LIGHT_HIGHER_VALUES = "light_higher_values";
+    String LIGHT_LOWER_VALUES = "light_lower_values";
 
-@EnableBinding(IDispatcher.class)
-public class Dispatcher {
-    ObjectMapper mapper = new ObjectMapper();
-    @Value("${min_value:110}")
-    int minValue;
-    @Value("${max_value:280}")
-    int maxValue;
-    @Autowired
-    IDispatcher channels;
+    String OXYGEN_HIGHER_VALUES = "oxygen_higher_values";
+    String OXYGEN_LOWER_VALUES = "oxygen_lower_values";
 
-    @StreamListener(IDispatcher.INPUT)
-    void getSensorData(String jsonSensor) throws JsonParseException, JsonMappingException, IOException {
-        SensorData sensor = mapper.readValue(jsonSensor,
-                SensorData.class);
-        if (sensor.number > maxValue) {
-            channels.higherValues().send(MessageBuilder
-                    .withPayload(jsonSensor).build());
-        } else if (sensor.number < minValue) {
-            channels.lowerValues().send(MessageBuilder
-                    .withPayload(jsonSensor).build());
-        }
-        channels.avgValues().send(MessageBuilder
-                .withPayload(jsonSensor).build());
+    String C02_HIGHER_VALUES = "co2_higher_values";
+    String C02_LOWER_VALUES = "co2_lower_values";
 
-    }
+    String SMOKE_SENSOR = "smoke_sensor";
+
+    String MONITORING_DASHBOARD = "monitoring_dashboard";
+
+    @Output(TEMP_HIGHER_VALUES)
+    MessageChannel tempHigherValues();
+
+    @Output(TEMP_LOWER_VALUES)
+    MessageChannel tempLowerValues();
+
+    @Output(LIGHT_HIGHER_VALUES)
+    MessageChannel lightHigherValues();
+
+    @Output(LIGHT_LOWER_VALUES)
+    MessageChannel lightLowerValues();
+
+    @Output(OXYGEN_HIGHER_VALUES)
+    MessageChannel oxygenHigherValues();
+
+    @Output(OXYGEN_LOWER_VALUES)
+    MessageChannel oxygenLowerValues();
+
+    @Output(C02_HIGHER_VALUES)
+    MessageChannel co2HigherValues();
+
+    @Output(C02_LOWER_VALUES)
+    MessageChannel co2LowerValues();
+
+    @Output(SMOKE_SENSOR)
+    MessageChannel smokeSensor();
+
+    @Output(MONITORING_DASHBOARD)
+    MessageChannel monitoringDashboard();
+
 }
