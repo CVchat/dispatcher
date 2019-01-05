@@ -205,19 +205,20 @@ public class Room {
         this.lights = lights;
     }
 
-    public int getPersons() {
+    public int getPersonsCount() {
         return persons;
     }
 
-    public void setPersons(int persons) {
+    public void setPersonsCount(int persons) {
         this.persons = persons;
     }
 
-    public int getAnimals() {
+
+    public int getAnimalsCount() {
         return animals;
     }
 
-    public void setAnimals(int animals) {
+    public void setAnimalsCount(int animals) {
         this.animals = animals;
     }
 
